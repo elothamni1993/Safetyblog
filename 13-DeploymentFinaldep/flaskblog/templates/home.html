@@ -1,0 +1,127 @@
+{% extends "layout.html" %}
+{% block content %}
+    {% for post in posts.items %}
+        <article class="media content-section">
+            <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
+            <div class="media-body">
+                <div class="article-metadata">
+                    <a class="mr-2" href="{{ url_for('users.user_posts', username=post.author.username) }}">{{ post.author.username }}</a>
+                    <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
+                </div>
+                <h2><a class="article-title" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a></h2>
+
+                <!-- Truncate the post content and add a "Read More" button -->
+                <p class="article-content" id="content-{{ post.id }}">
+                    {% if post.content|length > 100 %}
+                        {{ post.content[:100] }}...
+                        <a href="#" class="read-more" data-post-id="{{ post.id }}">Read More</a>
+                    {% else %}
+                        {{ post.content }}
+                    {% endif %}
+                </p>
+
+                <!-- Display the post picture if it exists -->
+                {% if post.picture %}
+                    <img class="img-fluid mt-3" src="{{ url_for('static', filename='post_pics/' + post.picture) }}" alt="Post Picture">
+                {% endif %}
+
+                <!-- Like/Dislike Section -->
+                <div class="like-dislike-section mt-3">
+                    <button class="btn btn-outline-success btn-sm like-btn" data-post-id="{{ post.id }}">
+                        Like <span class="like-count">{{ post.like_count }}</span>
+                    </button>
+                    <button class="btn btn-outline-danger btn-sm dislike-btn" data-post-id="{{ post.id }}">
+                        Dislike <span class="dislike-count">{{ post.dislike_count }}</span>
+                    </button>
+                </div>
+
+                <!-- Comments Section -->
+                <div class="comments-section mt-4">
+                    <h5>Comments:</h5>
+                    {% if post.comments %}
+                        <div class="comment-list">
+                            {% for comment in post.comments %}
+                                <div class="comment-item">
+                                    <strong>{{ comment.user.username }}</strong>:
+                                    <p>{{ comment.content }}</p>
+                                    <small class="text-muted">{{ comment.date_posted.strftime('%Y-%m-%d %H:%M') }}</small>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>No comments yet. Be the first to comment!</p>
+                    {% endif %}
+
+                    {% if current_user.is_authenticated %}
+                        <!-- Add a Comment Form -->
+                        <form method="POST" action="{{ url_for('posts.comment_post', post_id=post.id) }}" class="mt-2">
+                            {{ form.hidden_tag() }}
+                            <div class="form-group">
+                                {{ form.content.label(class="form-control-label") }}
+                                {{ form.content(class="form-control", rows=2) }}
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add Comment</button>
+                        </form>
+                    {% else %}
+                        <p>You must be logged in to comment.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </article>
+    {% endfor %}
+
+    <!-- Pagination Links -->
+    {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+        {% if page_num %}
+            {% if posts.page == page_num %}
+                <a class="btn btn-info mb-4" href="{{ url_for('main.home', page=page_num) }}">{{ page_num }}</a>
+            {% else %}
+                <a class="btn btn-outline-info mb-4" href="{{ url_for('main.home', page=page_num) }}">{{ page_num }}</a>
+            {% endif %}
+        {% else %}
+            ...
+        {% endif %}
+    {% endfor %}
+
+<script>
+    // JavaScript for dynamic "Read More"
+    document.querySelectorAll('.read-more').forEach(button => {
+        button.addEventListener('click', event => {
+            event.preventDefault();
+            const postId = button.getAttribute('data-post-id');
+            fetch(`/post/${postId}/full_content`)
+                .then(response => response.text())
+                .then(fullContent => {
+                    document.getElementById(`content-${postId}`).innerHTML = fullContent;
+                });
+        });
+    });
+
+    // JavaScript for Like/Dislike buttons
+    document.querySelectorAll('.like-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            const postId = button.getAttribute('data-post-id');
+            fetch(`/post/${postId}/like`, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    button.querySelector('.like-count').innerText = data.likes;
+                    button.nextElementSibling.querySelector('.dislike-count').innerText = data.dislikes;
+                });
+        });
+    });
+
+    document.querySelectorAll('.dislike-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            const postId = button.getAttribute('data-post-id');
+            fetch(`/post/${postId}/dislike`, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    button.querySelector('.dislike-count').innerText = data.dislikes;
+                    button.previousElementSibling.querySelector('.like-count').innerText = data.likes;
+                });
+        });
+    });
+</script>
+
+{% endblock content %}
+

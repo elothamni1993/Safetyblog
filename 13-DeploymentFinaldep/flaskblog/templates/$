@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="welcome-section">
+    <h1>Welcome to SafetyBlog</h1>
+    
+    <a href="{{ url_for('users.register') }}" class="cta-btn">Join Us Today</a>
+
+    <p>Your go-to platform for the latest safety tips, industry insights, and expert advice in the world of industrial safety.</p>
+</div>
+
+<!-- Team Section -->
+<div class="team-section">
+    <h2>Meet the Developers</h2>
+    <p>Our dedicated team of developers works hard to bring you the latest features and safety content, ensuring that your safety is our priority.</p>
+    <div class="team-members">
+        <div class="team-member">
+		<img src="https://drive.google.com/file/d/1IKNAEtAtwUsoDuxUhmK5qqkifUAcGq7t/view?usp=sharing" alt="otmane el othmani">
+
+
+            <h4>OTMANE</h4>
+            <p>Backend Developer</p>
+        </div>
+        <div class="team-member">
+            <img src="{{ url_for('static', filename='profile_pics/mouhouch.jpg') }}">
+            <h4>Rabie</h4>
+            <p>Backend Developer</p>
+        </div>
+        <div class="team-member">
+            <img src="{{ url_for('static', filename='profile_pics/fraani.jpg') }}">
+            <h4>FOUAD</h4>
+            <p>Backend Developer</p>
+        </div>
+    </div>
+</div>
+
+<!-- Social Media Section -->
+<div class="social-media-section">
+    <h2>Connect with us on Social Media</h2>
+    <p>Follow us to stay updated on the latest safety tips and news.</p>
+    <div class="social-icons">
+        <a href="https://twitter.com" target="_blank"><i class="fab fa-twitter"></i></a>
+        <a href="https://linkedin.com" target="_blank"><i class="fab fa-linkedin"></i></a>
+        <a href="https://github.com" target="_blank"><i class="fab fa-github"></i></a>
+    </div>
+</div>
+
+{% endblock content %}
+

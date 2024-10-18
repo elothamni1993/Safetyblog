@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<!-- Welcome Section -->
+<div class="welcome-section text-center">
+  <h1>🚀 Welcome to SafetyBlog</h1>
+  <p>Your go-to platform for safety tips and industry insights.</p>
+  <a href="{{ url_for('users.register') }}" class="cta-btn-animated">🌟 Join Us Today</a>
+</div>
+
+<!-- How It Works Section -->
+<div class="how-it-works-section text-center">
+  <h2>🔍 How It Works</h2>
+  <p>To get the most from SafetyBlog, follow these simple steps:</p>
+  <ul class="text-left d-inline-block">
+      <li>✅ Register and create your account to get started.</li>
+      <li>✅ Browse through safety posts to discover insights.</li>
+      <li>✅ Engage with the community by leaving comments.</li>
+      <li>✅ Share your own tips to help others stay safe.</li>
+  </ul>
+</div>
+
+<!-- Our Vision Section -->
+<div class="our-vision-section text-center">
+  <h2>🎯 Our Vision</h2>
+  <p>We aim to build a top platform for safety education.</p>
+  <p>Join our mission to promote safety awareness globally.</p>
+</div>
+
+<!-- Future Improvements Section -->
+<div class="future-improvements-section text-center">
+  <h2>🚀 Future Improvements</h2>
+  <p>We plan to introduce the following features:</p>
+  <ul class="text-left d-inline-block">
+      <li>✅ Interactive safety quizzes to enhance learning.</li>
+      <li>✅ Video tutorials from safety experts.</li>
+      <li>✅ A safety checklist feature for organizations.</li>
+      <li>✅ Integration with safety certification platforms.</li>
+  </ul>
+</div>
+
+<!-- Social Media Section -->
+<div class="social-media-section text-center">
+    <h2>Connect with us on Social Media</h2>
+    <p>Follow us to stay updated on the latest safety tips and news.</p>
+    <div class="social-icons">
+        <a href="https://x.com/safetyblogs" target="_blank"><i class="fab fa-twitter"></i></a>
+        <a href="https://www.linkedin.com/in/safety-blog-53a843332/" target="_blank"><i class="fab fa-linkedin"></i></a>
+    </div>
+</div>
+
+{% endblock content %}

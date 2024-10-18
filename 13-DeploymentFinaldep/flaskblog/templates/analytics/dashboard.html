@@ -1,0 +1,127 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>Analytics Dashboard</h1>
+
+    <!-- Overall Stats -->
+    <div class="row mt-5">
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h4 class="card-title">Total Users</h4>
+                    <p class="card-text">{{ user_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h4 class="card-title">Total Posts</h4>
+                    <p class="card-text">{{ post_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h4 class="card-title">Total Comments</h4>
+                    <p class="card-text">{{ comment_count }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Post Activity by Day of the Week -->
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <h2>Post Activity by Day of the Week</h2>
+            <canvas id="postActivityChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Comment Activity by Hour -->
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <h2>Comment Activity by Hour</h2>
+            <canvas id="commentActivityChart"></canvas>
+        </div>
+    </div>
+
+    <!-- User Engagement Breakdown -->
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <h2>User Engagement Breakdown</h2>
+            <canvas id="userEngagementChart"></canvas>
+        </div>
+    </div>
+
+</div>
+
+<!-- Chart.js integration -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Post Activity by Day of the Week Chart
+    var ctx1 = document.getElementById('postActivityChart').getContext('2d');
+    var postActivityChart = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+            labels: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+            datasets: [{
+                label: 'Posts by Day of the Week',
+                data: {{ post_activity_by_day | safe }},
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Comment Activity by Hour Chart
+    var ctx2 = document.getElementById('commentActivityChart').getContext('2d');
+    var commentActivityChart = new Chart(ctx2, {
+        type: 'line',
+        data: {
+            labels: Array.from({ length: 24 }, (_, i) => `${i}:00`),
+            datasets: [{
+                label: 'Comments by Hour',
+                data: {{ comment_activity_by_hour | safe }},
+                backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                borderColor: 'rgba(255, 206, 86, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // User Engagement Breakdown Chart
+    var ctx3 = document.getElementById('userEngagementChart').getContext('2d');
+    var userEngagementChart = new Chart(ctx3, {
+        type: 'pie',
+        data: {
+            labels: ['Active Users', 'Inactive Users'],
+            datasets: [{
+                data: [{{ active_users }}, {{ inactive_users }}],
+                backgroundColor: ['rgba(75, 192, 192, 0.2)', 'rgba(255, 99, 132, 0.2)'],
+                borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)'],
+                borderWidth: 1
+            }]
+        }
+    });
+</script>
+
+{% endblock %}
+

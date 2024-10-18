@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Admin Dashboard</h1>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card bg-info text-white text-center">
+                <div class="card-body">
+                    <h2>{{ user_count }}</h2>
+                    <p>Total Users</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white text-center">
+                <div class="card-body">
+                    <h2>{{ post_count }}</h2>
+                    <p>Total Posts</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-warning text-white text-center">
+                <div class="card-body">
+                    <h2>{{ comment_count }}</h2>
+                    <p>Total Comments</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart Section -->
+    <div class="mt-5">
+        <h3>Posts per Month</h3>
+        <canvas id="postsChart"></canvas>
+    </div>
+</div>
+
+<!-- Chart.js Script -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    var ctx = document.getElementById('postsChart').getContext('2d');
+    var postsChart = new Chart(ctx, {
+        type: 'line', // You can also use 'bar' for bar chart
+        data: {
+            labels: {{ months | safe }}, // Flask variable for months
+            datasets: [{
+                label: 'Posts',
+                data: {{ posts_per_month | safe }}, // Flask variable for post count per month
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 2,
+                fill: false
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}
+

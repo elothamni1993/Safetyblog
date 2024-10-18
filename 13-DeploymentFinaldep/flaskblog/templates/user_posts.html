@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h1 class="mb-3">Posts by {{ user.username }} ({{ posts.total }})</h1>
+    {% for post in posts.items %}
+        <article class="media content-section">
+            <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}" alt="{{ post.author.username }}'s profile picture">
+            <div class="media-body">
+                <div class="article-metadata">
+                    <a class="mr-2" href="{{ url_for('users.user_posts', username=post.author.username) }}">{{ post.author.username }}</a>
+                    <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
+                </div>
+                <h2><a class="article-title" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a></h2>
+                <p class="article-content">{{ post.content }}</p>
+
+                {% if post.picture %}
+                    <!-- Display the post picture if it exists -->
+                    <img class="img-fluid mt-3" src="{{ url_for('static', filename='post_pics/' + post.picture) }}" alt="Post Picture">
+                {% endif %}
+
+                <!-- Like/Dislike Section -->
+                <div class="post-actions mt-2">
+                    <a href="{{ url_for('posts.like_post', post_id=post.id) }}" class="btn btn-success btn-sm">Like ({{ post.likes }})</a>
+                    <a href="{{ url_for('posts.dislike_post', post_id=post.id) }}" class="btn btn-danger btn-sm">Dislike ({{ post.dislikes }})</a>
+                </div>
+
+                <!-- Display number of comments and link to the post -->
+                <p><a href="{{ url_for('posts.post', post_id=post.id) }}">View all comments ({{ post.comments|length }})</a></p>
+            </div>
+        </article>
+    {% endfor %}
+
+    <!-- Pagination links -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                {% if page_num %}
+                    <li class="page-item {% if posts.page == page_num %}active{% endif %}">
+                        <a class="page-link" href="{{ url_for('users.user_posts', username=user.username, page=page_num) }}">{{ page_num }}</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </nav>
+{% endblock content %}
+
